@@ -1,0 +1,85 @@
+{% extends 'petsis_app/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Purchase Order History
+{% endblock%}
+
+{% block page_header %}
+<a href="{% url 'supplier_orders' %}"><i class="fa-solid fa-circle-arrow-left back-bttn"></i></a> Purchase Orders Transaction History
+{% endblock%}
+
+{% block content %}
+<!----------CSS Orders---------->
+<link href="{% static 'petsis_app/css/style-orders.css' %}" rel="stylesheet">
+<link href="{% static 'petsis_app/css/style-orderhistory.css' %}" rel="stylesheet">
+
+<!--Transaction History-->
+<div class="order-card card m-3" id="activecard">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="order_history" class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="col-md-2" scope="col">ORDER ID</th>
+                        <th class="col-md-2" scope="col">SUPPLIER'S PRODUCT</th>
+                        <th class="col-md-2" scope="col">SUPPLIER</th>
+                        <th class="col-md-2" scope="col">LOCAL PRODUCT</th>
+                        <th class="col-md-1" scope="col">QUANTITY</th>
+                        <th class="col-md-1" scope="col">PRICE </th>
+                        <th class="col-md-1" scope="col">TOTAL</th>
+                        <th class="col-md-1" scope="col">CREATED</th>
+                        <th class="col-md-1" scope="col">STATUS</th>
+                        <th class="col-md-1" scope="col">TIMESTAMP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for transaction in transaction_history %}
+                            <tr>
+                                {% if transaction.status == 'Cancelled' %}
+                                    <th scope="row"> <span class="badge text-bg-danger status-cancelled">{{ transaction.order_obj.order_id }}</span></th>
+                                {% elif transaction.status == 'Completed' %}
+                                    <th scope="row"> <span class="badge text-bg-success status-completed">{{ transaction.order_obj.order_id }}</span></th>
+                                {% else %}
+                                    <th scope="row"> <span class="badge text-bg-warning status-pending">{{ transaction.order_obj.order_id }}</span></th>
+                                {% endif %}
+                                <td>{{ transaction.order_obj.supplier_product }}</td>
+                                <td>{{ transaction.order_obj.supplier_name }}</td>
+                                <td>{{ transaction.order_obj.product }}</td>
+                                <td>{{ transaction.order_obj.quantity }} {{ transaction.order_obj.product.unit }}s</td>
+                                <td>P{{ transaction.order_obj.order_price|floatformat:"2g" }}</td>
+                                <td>P{{ transaction.order_obj.total|floatformat:"2g" }}</td>
+                                <td>{{ transaction.order_obj.order_created }}</td>
+                                {% if transaction.status != 'Pending' %}
+                                    <td>
+                                        <!--if cancelled-->
+                                        {% if transaction.status == 'Cancelled' %}
+                                        <span class="badge text-bg-danger status-cancelled">{{ transaction.status }}</span>
+                                        <!--if completed-->
+                                        {% else %}
+                                        <span class="badge text-bg-success status-completed">{{ transaction.status }}</span>
+                                        {% endif %}
+                                        
+                                    </td>
+                                    <td>{{ transaction.orderdatetime }}</td>
+                                {% else %}
+                                <td>
+                                    <span class="badge text-bg-warning status-pending">{{ transaction.status }}</span>
+                                    
+                                </td>
+                                <td>
+                                    Active Order
+                                </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+
+                
+            </div>
+        </div>
+    
+</div>
+{% endblock %}

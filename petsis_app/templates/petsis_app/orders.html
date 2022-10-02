@@ -1,0 +1,350 @@
+{% extends 'petsis_app/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Customer Orders
+{% endblock%}
+
+{% block page_header %}
+    Customer Orders
+{% endblock%}
+
+{% block content %}
+<!----------CSS Orders---------->
+<link href="{% static 'petsis_app/css/style-orders.css' %}" rel="stylesheet">
+
+    
+<!--Pop-up Order Form-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="modalNewOrder" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNewOrder">New Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'orders' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupProduct">Select Product</label>
+                        <select name="product" class="form-select" id="inputGroupProduct" required>
+                            <option selected disabled value="">Choose</option>
+                            {% for product in product_list %}
+                                {% if product.quantity > 0 %}
+                                    <option value="{{ product.product }}">{{ product.product }}<p class="text-muted">({{ product.quantity }}{{ product.unit }} in stock)</p></option>
+                                {% else %}
+                                    <option disabled value="{{ product.product }}">{{ product.product }}<span class="text-muted">  ({{ product.quantity }}{{ product.unit }} in stock)</span></option>
+                                {% endif %}
+                            {% empty %}
+                                <option>No Products Present In the Inventory.</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <input name="customer" type="text" class="form-control" placeholder="Customer Name">
+                    </div>
+
+                    <div>
+                        <input name="quantity" type="number" class="form-control" placeholder="Quantity" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Add Order">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+    
+
+<!-- Adding Orders Alert-->
+
+{% if err_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ err_message }}
+    </div>
+{% endif %}
+
+{% if complete_mssg %}
+    <div class="alert alert-success" role="alert">
+        {{ complete_mssg }}
+    </div>
+{% endif %}
+<!--Page-->
+
+<div class="btn-group ps-3" role="group" aria-label="Basic example">
+    <a href="#activecard"><button type="button" class="btn btn-primary">Active</button></a>
+    <a href="#cancelledcard"><button type="button" class="btn btn-danger">Cancelled</button></a>
+    <a href="#completedcard"><button type="button" class="btn btn-success">Completed</button></a>
+  </div>
+<!--Active Order-->
+<div class="order-card card m-3" id="activecard">
+    <div class="card-body">
+        <div class="card-title mb-3">
+            <div class="row row-cols-1 row-cols-md-2 justify-content-between">
+                <div class="col-4">
+                    <span class="title-recact" style="color: rgb(216, 184, 42);">
+                        <i class="status fa-solid fa-circle" style="font-size: 0.5rem;"></i>&nbsp;&nbsp;&nbsp;Active Orders
+                    </span> 
+                </div>
+                <div class="col-4">
+                    <div class="float-end"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Order</button></div>
+                    
+                </div> 
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="example" class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="col-md-2" scope="col">ORDER ID</th>
+                        <th class="col-md-2" scope="col">PRODUCT NAME</th>
+                        <th class="col-md-2" scope="col">CUSTOMER</th>
+                        <th class="col-md-2" scope="col">QUANTITY</th>
+                        <th class="col-md-1" scope="col">PRICE</th>
+                        <th class="col-md-1" scope="col">TOTAL</th>
+                        <th class="col-md-1" scope="col">ORDERED</th>
+                        <th class="col-md-1" scope="col">CONTROLS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for order in pending_orders %}
+                        <tr>
+                            <th scope="row">{{ order.order_obj.order_id }}</th>
+                            <td>{{ order.order_obj.product }}</td>
+                            <td>{{ order.order_obj.customer_name }}</td>
+                            <td>{{ order.order_obj.quantity }} {{ order.order_obj.product.unit }}s</td>
+                            <td>P{{ order.order_obj.order_price|floatformat:"2g" }}</td>
+                            <td>P{{ order.order_obj.total|floatformat:"2g" }}</td>
+                            <td>{{ order.orderdatetime }}</td>
+                            <td>
+                                    <i class="fa-solid fa-pen-to-square me-2" data-bs-toggle="modal" data-bs-target="#{{ order.order_obj.order_id }}" style="font-size: 0.9rem; color: #A88850; cursor: pointer;"></i>    
+                                    <form  class="form-group col-md-6" action="{% url 'cancel' order.order_obj.order_id %}" method="POST" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-outline-danger" value="Cancel">
+                                    </form> 
+                                    
+                                    <form class="form-group col-md-6" action="{% url 'complete' order.order_obj.order_id %}" method="POST" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-success" value="Complete">
+                                    </form> 
+
+                            </td>
+                        </tr>
+
+                        <!--Update Form-->
+                        <div class="modal fade" id="{{ order.order_obj.order_id }}" tabindex="-1" aria-labelledby="{{ order.order_obj.order_id }}Label" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="{{ order.order_obj.order_id }}Label">Update Order</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <form action="{% url 'update' order.order_obj.order_id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <span class="badge bg-info">{{ order.order_obj.order_id }}</span>
+                                            <div class="input-group mb-3">
+                                                <label class="input-group-text" for="inputGroupProduct">Select Product</label>
+
+                                                <input name="prev_order" type="hidden" value="{{ order.order_obj.order_id }}">
+                                                <select name="curr_product" class="form-select" id="inputGroupProduct" required>
+                                                    <option disabled value="">Choose</option>
+                                                    {% for product in product_list %}
+                                                        {% if product.quantity > 0 %}
+                                                            {% if product == order.order_obj.product %}
+                                                                <option selected value="{{ product }}">{{ product.product }} ({{ product.quantity }}{{ product.unit }} in stock)</option>
+                                                            {% else %}
+                                                                <option value="{{ product }}">{{ product.product }}<p>({{ product.quantity }}{{ product.unit }} in stock)</p></option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {% if product.product == order.order_obj.product.product %}
+                                                                <option value="{{ product }}">{{ product.product }} ({{ product.quantity }}{{ product.unit }} in stock)</option>
+                                                            {% else %}
+                                                                <option disabled value="{{ product }}">{{ product.product }} ({{ product.quantity }}{{ product.unit }} in stock)</option>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            
+                                            
+
+                                            <div class="form-floating mb-3">
+                                                <input name="customer" type="text" class="form-control" value="{{ order.order_obj.customer_name }}"  id="floatingCustomerName">
+                                                <label for="floatingCustomerName">Customer Name</label>
+                                            </div>
+                                            
+                                            <div class="form-floating mb-3">
+                                                <input name="quantity" type="number" class="form-control" value="{{ order.order_obj.quantity }}"  id="floatingQuantity" step="1" required>
+                                                <label for="floatingQuantity">Quantity</label>
+                                            </div>
+                                            
+                                            <div class="form-floating mb-3">
+                                                <input name="price" type="number" class="form-control" value="{{ order.order_obj.order_price }}"  id="floatingPrice" required>
+                                                <label for="floatingPrice">Price</label>
+                                            </div> 
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">Close</button>
+                                            <input type="reset" class="btn btn-danger" value="Reset Details">
+                                            <input type="submit" class="btn btn-primary" value="Update Order">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" style="font-size: large; text-align: center;">
+                                <div class="card card text-center">
+                                    <div class="card-body">
+                                        <div>
+                                            <img src="{% static 'petsis_app/images/order/no_orders.png' %}" class="img-fluid" alt="No Inventory Items Image" width="150">
+                                        </div>
+                                        
+                                        <h5 class="card-title">No Orders Added Yet.</h5>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                
+            </div>
+        </div>
+    
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 justify-content-between">
+    <div class="col-4">
+        <h5 class="ms-3">Transaction History</h5>
+    </div>
+    <div class="col-4">
+        <div class="float-end me-3"><span id="view_all_rec-act"><a href="{% url 'order_history' %}">View All Records</a></span></div>
+    </div> 
+</div>
+<!--Cancelled Orders-->
+<div class="order-card card m-3" id="cancelledcard">
+    <div class="card-body">
+        <div class="card-title mb-3">
+            <p style="text-align:left;"><span class="title-recact" style="color: rgb(255, 49, 49);"><i class="status fa-solid fa-circle" style="font-size: 0.5rem;"></i>&nbsp;&nbsp;&nbsp; Latest Cancelled Orders</span> 
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="col-md-2" scope="col">ORDER ID</th>
+                        <th class="col-md-2" scope="col">PRODUCT NAME</th>
+                        <th class="col-md-2" scope="col">CUSTOMER</th>
+                        <th class="col-md-2" scope="col">QUANTITY</th>
+                        <th class="col-md-1" scope="col">PRICE</th>
+                        <th class="col-md-1" scope="col">TOTAL</th>
+                        <th class="col-md-1" scope="col">CANCELLED</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in cancelled_orders%}
+                    <tr>
+                        <th scope="row">{{ order.order_obj.order_id }}</th>
+                        <td>{{ order.order_obj.product }}</td>
+                        <td>{{ order.order_obj.customer_name }}</td>
+                        <td>{{ order.order_obj.quantity }} {{ order.order_obj.product.unit }}s</td>
+                        <td>P{{ order.order_obj.order_price|floatformat:"2g" }}</td>
+                        <td>P{{ order.order_obj.total|floatformat:"2g" }}</td>
+                        <td>{{ order.orderdatetime }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="font-size: large; text-align: center;">
+                            <div class="card card text-center">
+                                <div class="card-body">
+                                    <div>
+                                        <img src="{% static 'petsis_app/images/order/no_orders.png' %}" class="img-fluid" alt="No Inventory Items Image" width="150">
+                                    </div>
+                                    <h5 class="card-title">No Orders are Cancelled Yet.</h5>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    {% endfor %}
+
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!--Completed Orders-->
+<div class="order-card card m-3" id="completedcard">
+    <div class="card-body">
+        <div class="card-title mb-3">
+            <p style="text-align:left;"><span class="title-recact" style="color: rgb(45, 202, 124);"><i class="status fa-solid fa-circle" style="font-size: 0.5rem;"></i>&nbsp;&nbsp;&nbsp;Latest Completed Orders</span> 
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="col-md-2" scope="col">ORDER ID</th>
+                        <th class="col-md-2" scope="col">PRODUCT NAME</th>
+                        <th class="col-md-2" scope="col">CUSTOMER</th>
+                        <th class="col-md-2" scope="col">QUANTITY</th>
+                        <th class="col-md-1" scope="col">PRICE</th>
+                        <th class="col-md-1" scope="col">TOTAL</th>
+                        <th class="col-md-1" scope="col">COMPLETED</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in completed_orders%}
+                    <tr>
+                        <th scope="row">{{ order.order_obj.order_id }}</th>
+                        <td>{{ order.order_obj.product }}</td>
+                        <td>{{ order.order_obj.customer_name }}</td>
+                        <td>{{ order.order_obj.quantity }} {{ order.order_obj.product.unit }}s</td>
+                        <td>P{{ order.order_obj.order_price|floatformat:"2g" }}</td>
+                        <td>P{{ order.order_obj.total|floatformat:"2g" }}</td>
+                        <td>{{ order.orderdatetime }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="font-size: large; text-align: center;">
+                            <div class="card card text-center">
+                                <div class="card-body">
+                                    <div>
+                                        <img src="{% static 'petsis_app/images/order/no_orders.png' %}" class="img-fluid" alt="No Inventory Items Image" width="150">
+                                    </div>
+                                    <h5 class="card-title">No Orders are Completed Yet.</h5>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    {% endfor %}
+
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

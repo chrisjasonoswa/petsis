@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE-edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="icon" href="{% static 'petsis_app/lib/petsis_logo.png' %}" type="image/png">
+
+        <!----------CSS---------->
+        <link href="{% static 'petsis_app/css/navbar.css' %}" rel="stylesheet">
+        <link href="{% static 'petsis_app/css/style-dashboard.css' %}" rel="stylesheet">
+
+        <!----------BOXICON CSS---------->
+        <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css">
+
+        <!----------BOOTSTRAP CSS---------->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">                
+        
+        <!--Tables-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+        
+        <!-- Charts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Icon Font Stylesheet by Font Awesome -->
+        <script src="https://kit.fontawesome.com/c592d3fa2a.js" crossorigin="anonymous"></script>
+
+        <!-- Text Font Stylesheet -->
+        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+   
+        <title>PetSIS: {% block title %} {% endblock %}</title>
+    </head>
+
+
+    <body>
+    <!----------START OF NAV BAR---------->
+        <nav class="sidebar close shadow p-3 rounded-3">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <img src="{% static 'petsis_app/lib/logo.png' %}" alt="logo" />
+                    </span>
+
+                    <div class="text header-text">
+                        <span class="title">PetSIS</span>
+                        <span class="titledesc">Inventory Management System</span>
+                    </div>
+                </div>
+
+                <i class='bx bxs-chevron-right toggle collapse'></i>
+            </header>
+
+            <div class="menu-bar">
+                <div class="menu">
+                  <ul class="menu-links p-0">
+
+                    <!----------NOTIFICATIONS---------->
+                    <li class="nav-link dropend" id="notif">
+                        <a class="position-relative" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class='bx bxs-bell icon'></i>
+
+                            {% if no_active_notif > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ no_active_notif }}
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                            {% endif %}
+
+                            <span class="text nav-text">Notifications</span>
+                        </a>
+
+                        <ul class="dropdown-menu ms-2" id="notifs-display">
+                            <li class="notif-item">
+                                <div class="dropdown-item ps-3 pe-3" id="notif-title">
+                                    Recent Notifications&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </li>
+                            {% for notif in notifications %}
+                                <li class="notif-item">
+                                    <a class="notif-de dropdown-item ps-3 pe-3" href="{% url 'notif_read' notif.id %}"> 
+                                        <!-- Notif Details and Time-->
+                                        <div class="row row-cols-1 w-100">
+                                            <!-- Notif Icon-->   
+                                            <div class="col" id="notif_details">
+                                                {% if notif.notif_type == 'warning' %}
+                                                <i class="fa-solid fa-circle-exclamation warning-notif"></i>
+                                                {% elif notif.notif_type == 'danger' %}
+                                                    <i class="fa-solid fa-triangle-exclamation danger-notif"></i>
+                                                {% elif notif.notif_type == 'success' %}
+                                                    <i class="fa-solid fa-square-check success-notif"></i>
+                                                {% endif %}
+
+                                                {% if notif.status == 'unread' %}
+                                                    <span style="color: #2b9273">{{ notif.notif|safe }}</span>
+                                                {% else %}
+                                                    {{ notif.notif|safe }}
+                                                {% endif %}
+                                                
+                                            </div>
+
+                                            <div class="col text-muted ps-4" id="notif-time">
+                                                {% if notif.status == 'unread' %}
+                                                    <span style="color: #2b9273">{{ notif.notif_datetime }}</span>
+                                                {% else %}
+                                                    {{ notif.notif_datetime }}
+                                                {% endif %}
+                                                
+                                            </div>
+
+                                        </div>                      
+                                    </a>
+                                </li>   
+                            {% endfor%}
+                            <li class="notif-item">
+                                <div class="dropdown-item ps-3 pe-3" id="notif-title">
+                                    <a href="{% url 'notif_read_all' %}" id="read_all_bttn">
+                                        <span style="color: #A88850;">Mark All as Read</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!----------DASHBOARD---------->
+                    <li class="nav-link">
+                        <a href="{% url 'index' %} ">
+                            <i class='bx bx-home-alt icon'></i>
+                            <span class="text nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <!----------CUSTOMER ORDERS ---------->
+                    <li class="nav-link">
+                        <a href="{% url 'orders' %}">
+                            <i class='bx bx-archive-in icon'></i>
+                            <span class="text nav-text">Customer Orders</span>
+                        </a>
+                    </li>
+
+                     <!----------SUPPLIER ORDERS ---------->
+                     <li class="nav-link">
+                        <a href="{% url 'supplier_orders' %}">
+                            <i class='bx bx-box icon' ></i>
+                            <span class="text nav-text">Supplier Orders</span>
+                        </a>
+                    </li>
+
+                    <!----------INVENTORY---------->
+                    <li class="nav-link">
+                        <a href="{% url 'inventory' %}">
+                            <i class='bx bx-package icon'></i>
+                            <span class="text nav-text">Inventory</span>
+                        </a>
+                    </li>
+
+                    <!----------SETTINGS---------->
+                    <li class="nav-link">
+                        <a href="{% url 'settings' %}">
+                            <i class='bx bx-cog icon'></i>
+                            <span class="text nav-text">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+                </div>
+            <!----------NAV FOOTER---------->
+                <div class="bottom-content">
+
+                   
+                    <!----------LOGOUT---------->
+                    <li class="">
+                        <a href="{% url 'logout' %}">
+                            <i class='bx bx-log-out-circle icon'></i>
+                            <span class="text nav-text">Logout</span>
+                        </a>
+                    </li>
+                    
+                
+                </div>
+            </div>
+        </nav>
+    <!----------END OF NAV BAR---------->
+
+    <!----------START OF SECTION--------->
+    <section class="inventory" style="padding-left: 7rem !important; padding-right: 1.5rem !important;overflow: auto;">
+        <div class="mb-3">
+            <div class="row">
+                <div class="col  d-flex justify-content-start">
+                    <div class="text" style="padding-top: 2%; padding-left: 2%; padding-bottom: 0%; font-size: 30px">{% block page_header %}{% endblock%}</div>
+                </div>
+            </div>
+        </div>
+
+
+        <hr>
+        
+
+
+
+        {% block content %} {% endblock %}
+
+    </section>
+
+
+    <!----------JS SCRIPT---------->
+    <script type="text/javascript" src="{% static 'petsis_app/js/navbar.js' %}"></script>
+
+    <!----------JS SCRIPT BOOSTRAP---------->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>
+    
+
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!--Data Tables-->
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    <!----------JS SCRIPT Orders---------->
+    <script src="{% static 'petsis_app/js/orders.js' %}"></script>
+
+    <!----------JS SCRIPT Orders History---------->
+    <script src="{% static 'petsis_app/js/orders_history.js' %}"></script>
+
+    <!----------JS SCRIPT Sales History---------->
+    <script src="{% static 'petsis_app/js/sales.js' %}"></script>
+
+    <!----------JS SCRIPT Activity History---------->
+    <script src="{% static 'petsis_app/js/activity.js' %}"></script>
+
+
+
+    <!--Alerts-->
+    <script src="{% static 'petsis_app/js/alerts.js' %}"></script>
+
+    <!--Notif-->
+    <script src="{% static 'petsis_app/js/notif.js' %}"></script>
+    </body>
+</html>

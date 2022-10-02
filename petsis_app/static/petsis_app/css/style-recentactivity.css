@@ -1,0 +1,8 @@
+td a{
+    color: #606a67;
+    font-weight: 600;
+}
+
+td a:hover{
+    color: #64cfad;
+}

@@ -1,0 +1,380 @@
+{% extends 'petsis_app/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Inventory
+{% endblock%}
+
+{% block page_header %}
+    Inventory
+{% endblock%}
+
+{% block content %}
+
+    <!----------CSS Inventory---------->
+    <link href="{% static 'petsis_app/css/style-inventory.css' %}" rel="stylesheet">
+
+    <!--Pop-up Add Item Inventory Form-->
+    <div class="modal fade" id="additem" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel1">New Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="{% url 'inventory' %}" enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        
+                            <div class="mb-3">
+                                <input name="add_product" type="text" class="form-control" placeholder="Product Name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <input name="quantity" type="number" class="form-control" placeholder="Quantity" step="1" min="1" required>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="inputGroupUnits">Units</label>
+                                
+                                <select name="unit" class="form-select" id="inputGroupUnits" required>
+                                    <option selected disabled>Choose</option>
+                                {% for unit in units %}
+                                    <option value="{{ unit }}">{{ unit }}</option>
+                                {% endfor %}
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                
+                            </div>
+
+                            <div class="input-group mb-3">
+                                
+                                <input name="price" type="number" class="form-control"  id="inputPrice" placeholder="Price" step="any" required>
+                                <label class="input-group-text" for="inputPrice">PHP</label>
+
+                            </div>
+
+
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="inputGroupCategory">Category</label>
+                                <select name="category" class="form-select" id="inputGroupCategory">
+                                    <option selected disabled>Choose</option>
+                                    {% for category in category_list %}
+                                        <option value="{{ category }}">{{ category }}</option>
+                                    {% empty %}
+                                        <option>No Categories Added Yet. </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div>
+                                <input name="item_img" type="file" class="form-control" id="inputGroupFile02" accept="image/*">
+                            </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Add Item">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Pop-up Add Category Form-->
+    <div class="modal fade" id="addcategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="{% url 'inventory' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div>
+                            <input name="add_category" type="text" class="form-control" placeholder="Category" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">Close</button>
+                        <input class="btn btn-primary" type="submit" value="Add Category">
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!--Pop-up Delete Category Form-->
+    <div class="modal fade" id="delcategory" tabindex="-1" aria-labelledby="delcategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header modal-delete">
+                    <h5 class="modal-title" id="delcategoryModalLabel">Delete Category Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form  action="{% url 'category_remove' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="inputGroupCategory">Category</label>
+                                <select name="category" class="form-select" id="inputGroupCategory">
+                                    <option selected disabled>Choose</option>
+                                    {% for category in category_list %}
+                                        <option value="{{ category }}">{{ category }}</option>
+                                    {% empty %}
+                                        <option>No Categories Added Yet. </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Delete Category">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!--Success Message-->
+    {% if succ_mssg %}
+        <div class="alert alert-success" role="alert">
+            {{ succ_mssg }}
+        </div>
+    {% endif %}
+    
+    <!--Error  Message-->
+    {% if err_mssg %}
+        <div class="alert alert-danger" role="alert">
+            {{ err_mssg }}
+        </div>
+    {% endif %}
+
+    
+    <!--Filter Category-->
+    
+    <div class="mb-3">
+        <div class="row">
+            <div class="col  d-flex justify-content-start">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                      Category
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% if category_list %}
+                            <li><a class="dropdown-item" href="{% url 'inventory' %}">All</a></li>
+                        {% endif %}
+                        {% for category in category_list %}
+                            <li><a class="dropdown-item" href="{% url 'category_view' category %}">{{ category }}</a></li>
+                        {% empty %}
+                            <li><a class="dropdown-item" >No Categories Added Yet.</a></li>
+                        {% endfor %}
+                    </ul>
+                  </div>
+            </div>
+            <div id="change" class="col d-flex justify-content-end add-cat-item">
+
+                <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#additem">Add Item</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addcategory">Add Category</button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delcategory"><i class="fa-solid fa-trash" style="color: white;"></i></button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+
+   
+    <!-- Category Filter if there is any-->
+    {% if cat_filter %}
+        <span class="badge btn-primary bd-cat">{{ cat_filter }}</span>
+    {% endif %}
+
+    <!--Loading Inventory Items-->
+    {% if item_list %}
+        <div class="row row-cols-1 row-cols-md-5 g-10 justify-content-center">
+            {% for item in item_list %}
+            <div class="col inv-items-cards ">
+                <div class="card h-100 mb-3 rounded-5 ">
+                    <a data-bs-toggle="modal" data-bs-target="#modal-update-{{ item.id }}" style="cursor: pointer; border-radius: inherit !important;">
+                    <img src="/media/{{ item.item_img }}" class="card-img-top p-3" alt="..." style="object-fit:cover;
+                    object-position: center;
+                    height:250px;
+                    border-radius: inherit !important;">
+                    </a>
+                    <div class="card-body">
+                        <div class="row row-cols-md-0 g-1">
+                            
+                            <div class="col d-flex align-items-end ">
+                                <h6 data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">{{ item.product }}&nbsp;<i class="fa-solid fa-caret-down fa-1x"></i></h6>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-update-{{ item.id }}"><i class="fa-solid fa-pen-to-square update_items_bttn align-middle"></i> Update Info</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-remove-{{ item.id }}"><i class="fa-solid fa-trash update_items_bttn align-middle"></i> Remove</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="col ">
+                                {% if item.quantity == 0 %}
+                                <div><span class="badge rounded-pill text-bg-danger">Out of Stock</span></div>
+                                {% elif item.quantity < 30 %}
+                                <div><span class="badge rounded-pill text-bg-warning" style="color: white !important;">Low Stock</span></div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+
+                    
+                    <p class="card-text item-info ">
+
+                        <span class="info-title">Quantity</span>&nbsp;&nbsp;&nbsp;{{ item.quantity }} {{ item.unit }}s.
+                        <br>
+                        <span class="info-title">Price</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  P{{ item.price }} 
+                    </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Info -->
+            <div class="modal fade" id="modal-update-{{ item.id }}" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">{{ item.product }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+        
+                        <form action="{% url 'update_item' %}" enctype="multipart/form-data" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <input name="item_id"  type="hidden" value="{{ item.id }}" required>
+                                <div class="form-floating mb-3">
+                                    <input name="product" id="floatingProductName" type="text" class="form-control" placeholder="Product Name" value="{{ item.product }}" required>
+                                    <label for="floatingProductName">Product Name</label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input name="quantity" id="floatingQuantity"type="number" class="form-control" placeholder="Quantity" step="1" value="{{ item.quantity }}" required>
+                                    <label for="floatingQuantity">Quantity</label>
+                                </div>
+
+
+
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="inputGroupUnits" >Units</label>
+                                    
+                                    <select name="unit" class="form-select" id="inputGroupUnits" required>
+                                    <option disabled>Choose</option>
+                                    {% for unit in units %}
+                                        {% if unit == item.unit %}
+                                            <option selected value="{{ unit }}">{{ unit }}</option>
+                                        {% else%}
+                                            <option value="{{ unit }}">{{ unit }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="inputPrice">Price (PHP)</label>
+                                    <input name="price" type="number" class="form-control"  id="inputPrice" placeholder="Price" step="any" value="{{ item.price }}"required>
+                                </div>
+
+
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="inputGroupCategory">Category</label>
+                                    <select name="category" class="form-select" id="inputGroupCategory">
+                                        
+                                        {% if not item.category.category in category_list %}
+                                            <option selected disabled>Choose</option>
+                                        {% endif %}
+                                        
+                                        {% for category in category_list %}
+                                            {% if category == item.category.category %}
+                                                <option selected value="{{ category }}">{{ category }}</option>
+                                            {% else %}
+                                                <option value="{{ category }}">{{ category }}</option>
+                                            {% endif %}
+                                            
+                                        {% empty %}
+                                            <option>No Categories Added Yet. </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <input name="item_img" type="file" class="form-control" id="inputGroupFileItemImg" accept="image/*">
+                                    <label class="input-group-text" for="inputGroupFileItemImg">Update Image</label>
+                                </div>
+
+                            </div>
+                        
+
+                            <div class="modal-footer">
+                                <input type="reset" class="btn btn-danger" value="Reset Details">
+                                <input type="submit" class="btn btn-primary" value="Update Item">
+                                <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">Close</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--Pop-up Remove Item Form-->
+            <div class="modal fade" id="modal-remove-{{ item.id }}" tabindex="-1" aria-labelledby="{{ item.product }}Modal-remove" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="{{ item.product }}Modal-Restock">Restock {{ item.product }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        <form action="{% url 'remove' item.id %}" method="POST">
+                            {% csrf_token %}
+                            All pending orders with this item will be cancelled. 
+                            <br><b>Pending Orders:</b>
+                            {% for order in item.inventoryitems_orders.all %}
+                                {% for order_latest in order.order_latest_status.all %}
+                                    {% if order_latest.status == 'Pending' %}
+                                        {{ order_latest.order_obj.order_id }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <br>Are you sure you want to proceed?
+                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary close-bttn" data-bs-dismiss="modal">No</button>
+                                <input class="btn btn-primary" type="submit" value="Yes, Delete Item">
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else%}
+        <div class="card card text-center">
+            <div class="card-body">
+                <div>
+                    <img src="{% static 'petsis_app/images/inventory/no_inventory_items.png' %}" class="img-fluid" alt="No Inventory Items Image" width="550">
+                </div>
+                <h5 class="card-title">No Inventory Items Added Yet.</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Click Add Item to add items in you inventory</h6>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

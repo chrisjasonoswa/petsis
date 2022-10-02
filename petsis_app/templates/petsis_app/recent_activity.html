@@ -1,0 +1,43 @@
+{% extends 'petsis_app/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Activity
+{% endblock%}
+
+{% block page_header %}
+<a href="{% url 'index' %}"><i class="fa-solid fa-circle-arrow-left back-bttn"></i></a> Activity
+{% endblock%}
+
+{% block content %}
+<!----------CSS Orders---------->
+<link href="{% static 'petsis_app/css/style-orders.css' %}" rel="stylesheet">
+<link href="{% static 'petsis_app/css/style-orderhistory.css' %}" rel="stylesheet">
+<link href="{% static 'petsis_app/css/style-recentactivity.css' %}" rel="stylesheet">
+
+<!--Sales-->
+<div class="order-card card m-3" id="activecard">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="activity" class="table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">ACTIVITY</th>
+                        <th scope="col" class="text-end">DATETIME</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for act in rec_act %}
+                            <tr>
+                                <td>{{ act.act|safe }}</td>
+                                <td class ="text-end">{{ act.act_datetime }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}
