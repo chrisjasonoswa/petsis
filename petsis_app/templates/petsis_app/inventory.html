@@ -203,10 +203,10 @@
 
     <!--Loading Inventory Items-->
     {% if item_list %}
-        <div class="row row-cols-1 row-cols-md-5 g-10 justify-content-center">
+        <div class="row row-cols-1 row-cols-md-6 g-12 justify-content-center">
             {% for item in item_list %}
             <div class="col inv-items-cards ">
-                <div class="card h-100 mb-3 rounded-5 ">
+                <div class="card h-100 rounded-5 ">
                     <a data-bs-toggle="modal" data-bs-target="#modal-update-{{ item.id }}" style="cursor: pointer; border-radius: inherit !important;">
                     <img src="/media/{{ item.item_img }}" class="card-img-top p-3" alt="..." style="object-fit:cover;
                     object-position: center;
@@ -214,33 +214,40 @@
                     border-radius: inherit !important;">
                     </a>
                     <div class="card-body">
-                        <div class="row row-cols-md-0 g-1">
-                            
-                            <div class="col d-flex align-items-end ">
-                                <h6 data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">{{ item.product }}&nbsp;<i class="fa-solid fa-caret-down fa-1x"></i></h6>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-update-{{ item.id }}"><i class="fa-solid fa-pen-to-square update_items_bttn align-middle"></i> Update Info</a></li>
-                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-remove-{{ item.id }}"><i class="fa-solid fa-trash update_items_bttn align-middle"></i> Remove</a></li>
-                                </ul>
-                            </div>
-                            
+                        <div class="row row-cols-1 row-cols-md-1 h-100">
                             <div class="col ">
-                                {% if item.quantity == 0 %}
-                                <div><span class="badge rounded-pill text-bg-danger">Out of Stock</span></div>
-                                {% elif item.quantity < 30 %}
-                                <div><span class="badge rounded-pill text-bg-warning" style="color: white !important;">Low Stock</span></div>
-                                {% endif %}
+                                <div class="row row-cols-1 row-cols-md-1 g-1">
+                                    
+                                    <div class="col d-flex align-items-end mb-0">
+                                        <h6 class="mb-0" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">{{ item.product }}&nbsp;<i class="fa-solid fa-caret-down fa-1x"></i></h6>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-update-{{ item.id }}"><i class="fa-solid fa-pen-to-square update_items_bttn align-middle"></i> Update Info</a></li>
+                                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-remove-{{ item.id }}"><i class="fa-solid fa-trash update_items_bttn align-middle"></i> Remove</a></li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="col ">
+                                        {% if item.quantity == 0 %}
+                                        <div><span class="badge rounded-pill text-bg-danger">Out of Stock</span></div>
+                                        {% elif item.quantity < 30 %}
+                                        <div><span class="badge rounded-pill text-bg-warning" style="color: white !important;">Low Stock</span></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
+                            
+                            <div class="col d-flex align-items-end">
+                                <div class="p-0">
+                                    <p class="card-text item-info mt-2">
+
+                                        <span class="info-title">Quantity</span>&nbsp;&nbsp;&nbsp;{{ item.quantity }} {{ item.unit }}s.
+                                        <br>
+                                        <span class="info-title">Price</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  P{{ item.price }} 
+                                    </p>
+                                </div>
+                            </div>
+
                         </div>
-
-
-                    
-                    <p class="card-text item-info ">
-
-                        <span class="info-title">Quantity</span>&nbsp;&nbsp;&nbsp;{{ item.quantity }} {{ item.unit }}s.
-                        <br>
-                        <span class="info-title">Price</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  P{{ item.price }} 
-                    </p>
                     </div>
                 </div>
             </div>

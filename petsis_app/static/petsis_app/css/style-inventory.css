@@ -32,9 +32,9 @@ div.modal-content{
     border-radius: 2rem !important;
     min-width: 250px;
 }
-@media (max-width: 13500px) {
+@media (max-width: 1350px) {
     .inv-items-cards{
-        margin-bottom: 2rem !important;
+        margin-bottom: 1rem !important;
     }
     }
 
@@ -87,3 +87,6 @@ div.modal-content{
     font-weight: 600 !important;
 }
 
+.col{
+    margin-top: 0% !important;
+}
