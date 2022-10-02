@@ -14,6 +14,31 @@ div.home-card{
         padding: 2rem;
     }
 }
+
+@media (max-width: 992px) {
+    #track-title{
+        font-size: 2rem !important;
+    }
+    .card-text{
+        font-size: 1.2rem !important;
+    }
+    .home1-img{
+        max-height: 400px;
+        width: auto;
+    }
+    .home1-bttn{
+        margin:    0% !important;
+    }
+    #homepage-top{
+        margin-top: 0% !important;
+    }
+    #home-logo{
+        max-height: 40px;
+        height: auto;
+        width: auto;
+    }
+}
+
 div.home-title{
     background-color: #1e2e2b;
 }
@@ -21,7 +46,7 @@ div.home-title{
     font-weight: 700 !important; 
 }
 .card-text{
-    font-size: 1.4rem !important;
+    font-size: 1.4rem ;
 }
 .card, .col-home{
     background-color: rgba(0, 0, 0, 0) !important;

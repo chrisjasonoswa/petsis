@@ -13,6 +13,7 @@ urlpatterns = [
 
     path("notifications<str:notif_id>", views.notif_read, name="notif_read"),
     path("notifications/read-all", views.notif_read_all, name="notif_read_all"),
+    path("notifications/all", views.notif_all, name="notif_all"),
 
     path("orders", views.orders, name="orders"),
     path("orders/history", views.order_history, name="order_history"),

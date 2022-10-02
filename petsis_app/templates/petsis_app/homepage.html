@@ -27,7 +27,6 @@
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
         </div>
 
             <div class="carousel-inner">
@@ -42,17 +41,17 @@
                                     {{ succ_mssg }}
                                 </div>
                             {% endif %}
-                            <!-- Logo header-->
-                            <img src="{% static 'petsis_app/images/homepage/petsis_logo_white.png' %}" width="140">
-                            <div class="row align-items-center" id="homepage_top">
+                            <div class="home1-top-row row align-items-center" id="homepage_top" style="margin-top: 0% !important;">
                                 <div class="col-lg-5 text-center text-lg-start col-home">
+                                     <!-- Logo header-->
+                                    <img id="home-logo" src="{% static 'petsis_app/images/homepage/petsis_logo_white.png' %}" width="140">
                                     <div class="card">
-                                        <h1 class="card-title" style="font-size: 4rem;"><span style="color: #e0ad55">Track</span> your inventory easily with <span style="color: #58b397">PetSIS</span></h1>
+                                        <h1 class="card-title" id="track-title" style="font-size: 4rem;"><span style="color: #e0ad55">Track</span> your inventory easily with <span style="color: #58b397">PetSIS</span></h1>
                                         <p class="card-text">Helping pet store owners track their inventory from stocking of items, making orders and identifying sales. </p>
                                         <br>
                                         <p class="card-text">PetSIS will help you ensure there’s always enough stock to fulfill customer orders and proper warning of a shortage.</p>
                     
-                                            <div class="row mt-5">
+                                            <div class="home1-bttn row mt-3">
                                                 <div class="col-sm-6 col-home">
                                                     <a href="{% url 'register' %}"><button type="button" class="btn btn-primary btn-signup rounded-5 w-100">Signup</button></a>
                                                 </div>
@@ -60,11 +59,10 @@
                                                     <a href="{% url 'login' %}"><button type="button" class="btn btn-outline-primary btn-login rounded-5 w-100">Login</button></a>
                                                 </div>
                                             </div>
-                    
                                     </div>
                                 </div>
                 
-                                <div class="col-lg-7 text-center text-lg-end col-home pe-0">
+                                <div class="col-lg-7 text-center text-lg-end col-home pe-0 home1-img">
                                     <div class="card">
                                         <img class="ps-1 w-100" id="inv_img" src="{% static 'petsis_app/images/homepage/inventory.png'%}">
                                         <!--<div class="card h-100 h-image" style="background-image: url({% static 'petsis_app/images/homepage/inventory.png'%});">
@@ -128,11 +126,11 @@
                     </div>
                 </div>
 
-                <!-- Sales and Orders-->
+                <!-- Sales and Orders
                 <div class="carousel-item">
                     <div class="home-card d-flex align-items-center">
                         <div class="container">
-                            <!-- Logo header-->
+                            Logo header
                             <div class="row align-items-center" id="homepage_top">
                                 
                 
@@ -156,7 +154,7 @@
                             </div> 
                         </div>
                     </div>
-                </div>
+                </div>-->
 
 
                 <!-- Top5-->

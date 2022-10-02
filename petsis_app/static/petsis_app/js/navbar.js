@@ -2,7 +2,6 @@
     sidebar = body.querySelector(".sidebar"),
     toggle = body.querySelector(".toggle"),
     searchBtn = body.querySelector(".search"),
-    modeSwitch = body.querySelector(".toggle-switch"),
     modeText = body.querySelector(".mode-text");
 
 

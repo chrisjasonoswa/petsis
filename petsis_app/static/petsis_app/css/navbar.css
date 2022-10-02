@@ -395,3 +395,14 @@ body.dark .switch::before{
 .back-bttn:hover{
     cursor: pointer;
 }
+
+#notif-view-all{
+    background-color: rgba(0, 0, 0, 0) !important;
+    font-weight: 400 !important;
+    color: var(--primary-color);
+}
+
+.view-all-bttn:hover{
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0) !important;
+}

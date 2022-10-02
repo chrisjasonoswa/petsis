@@ -1,43 +1,63 @@
-<!--Notifications -->
-<div class="col d-flex justify-content-end align-items-center border-0" >
-    <div class="pe-4">
-        <button type="button" class="btn position-relative" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 50% !important; background-color: #A88850;" >
-            <i class="fa-solid fa-bell" style="color: white"></i>
-            {% if notif_items %}
-            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-              <span class="visually-hidden">New alerts</span>
-            </span>
-            {% endif %}
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start notif">
-            <li class="dropdown-item notif">Notifications</li>
-            {% for notif in notif_items %}
-                {% if notif.status == 'unread' %}
-                    <li>{{ notif.notif|safe }}&nbsp; &nbsp<i class="fa-solid fa-circle" style="color:red;"></i></a></li>
-                {% else %}
-                    <li>{{ notif.notif|safe }}</li>
-                {% endif%}
-            {% empty %}
-                <li><a class="dropdown-item align-items-center justify-content-start">No Items Yet</a></li>
-            {% endfor %}
-        </ul>
-      </div>
-</div>
-<!--Views-->
-#Get Notitifications
-notif_items = Notifications.objects.filter(user=user).order_by('-id')[:5]
+{% extends 'petsis_app/layout.html' %}
+{% load static %}
+{% block title %}
+    Notifications
+{% endblock%}
 
+{% block page_header %}
+    Notifications
+{% endblock%}
 
-<!--ORders-->
-#Notify if Stock is == 0
-if product.quantity == 0:
-    add_notif = Notifications(user=user, 
-    notif="<a class='dropdown-item d-flex justify-content-start align-items-center notif' href='inventory'><i class='fa-solid fa-circle-exclamation red'></i>&nbsp;" + product.product + "&nbsp;is Out of Stock.</a>")
-    add_notif.save()
+{% block content %}
+<link href="{% static 'petsis_app/css/style-notifications.css' %}" rel="stylesheet">
+    <div class="container">
 
-#Notify if Stock is < 20
-elif product.quantity < 20:
-    add_notif = Notifications(user=user, notif="placeholder")
-    add_notif.save()
-    add_notif.notif = f"<a class='dropdown-item d-flex justify-content-start align-items-center notif' href='notif/{add_notif.id}'><i class='fa-solid fa-circle-exclamation yellow'></i>&nbsp;" + product.product + "&nbsp;is Low on Stock ("+ str(product.quantity)+ product.unit+" Left)."
-    add_notif.save()
+        <a  href="{% url 'notif_read_all'%}"> 
+            <div class="ps-4 mb-2 mark-all">
+                Mark All as Read <i class='bx bxs-check-circle'></i>&nbsp;
+            </div>
+        </a>
+        {% for notif in notifications_all %}
+            <a href="{% url 'notif_read' notif.id %}"> 
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <!-- Notif Details and Time-->
+                        <div class="row row-cols-2">
+                            <!-- Notif Icon-->   
+                            <div class="col" id="notif_details">
+                                {% if notif.notif_type == 'warning' %}
+                                <i class="fa-solid fa-circle-exclamation warning-notif"></i>
+                                {% elif notif.notif_type == 'danger' %}
+                                    <i class="fa-solid fa-triangle-exclamation danger-notif"></i>
+                                {% elif notif.notif_type == 'success' %}
+                                    <i class="fa-solid fa-square-check success-notif"></i>
+                                {% endif %}
+
+                                {% if notif.status == 'unread' %}
+                                    <span style="color: #2b9273">{{ notif.notif|safe }}</span>
+                                {% else %}
+                                    {{ notif.notif|safe }}
+                                {% endif %}
+                            </div>
+
+                            <div class="col text-muted ps-4 text-end" id="notif-time">
+                                {% if notif.status == 'unread' %}
+                                    <span style="color: #2b9273">{{ notif.notif_datetime }}</span>
+                                {% else %}
+                                    {{ notif.notif_datetime }}
+                                {% endif %}
+                            </div>
+
+                        </div>                      
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    You have no notifications yet
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

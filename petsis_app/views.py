@@ -866,3 +866,21 @@ def notif_read_all(request):
     #Set all Notifications to Read
     Notifications.objects.filter(user=user).update(status="read")
     return redirect(request.META['HTTP_REFERER'])
+
+@login_required
+def notif_all(request):
+    username = request.user.get_username()
+    user = User.objects.get(username=username)
+
+    #Get User Notifications
+    notifications_recent = Notifications.objects.filter(user=user).order_by('-id')[:10]
+    notifications_all = Notifications.objects.filter(user=user).order_by('-id')
+    no_active_notif = Notifications.objects.filter(user=user, status="unread").count()
+
+    context = {
+        "notifications": notifications_recent,
+        "notifications_all": notifications_all,
+        "no_active_notif": no_active_notif,
+    }
+
+    return render(request, "petsis_app/notifications.html", context)
