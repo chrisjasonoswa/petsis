@@ -2,7 +2,7 @@ from .models import *
 from django.contrib.auth import authenticate
 
 def units_list():
-    return ['pc', 'kg', 'pack', 'set', 'pair']
+    return sorted(['pc', 'kg', 'pack', 'set', 'pair'])
 
 def increment_order_number(user):
     last_order = Order.objects.filter(user=user).order_by('id').last()
