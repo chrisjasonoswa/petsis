@@ -39,7 +39,7 @@
                                 <label class="input-group-text" for="inputGroupUnits">Units</label>
                                 
                                 <select name="unit" class="form-select" id="inputGroupUnits" required>
-                                    <option selected disabled>Choose</option>
+                                    <option selected disabled value="">Choose</option>
                                 {% for unit in units %}
                                     <option value="{{ unit }}">{{ unit }}</option>
                                 {% endfor %}
