@@ -31,6 +31,7 @@ div.modal-content{
 .inv-items-cards{
     border-radius: 2rem !important;
     min-width: 250px;
+    margin-bottom: 1rem;
 }
 @media (max-width: 1350px) {
     .inv-items-cards{
