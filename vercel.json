@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "petsis_app/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "petsis_app/wsgi.py"
+      }
+    ]
+}

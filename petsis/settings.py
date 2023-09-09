@@ -81,23 +81,25 @@ WSGI_APPLICATION = 'petsis.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'URL': 'postgresql://postgres:o451Ak9HUcikOi4wbjIk@containers-us-west-61.railway.app:7215/railway',
+        'NAME': 'PGDATABASE',
+        'USER': 'postgres',
+        'PASSWORD': 'o451Ak9HUcikOi4wbjIk',
+        'HOST': 'containers-us-west-61.railway.app',
+        'PORT': 7215,
     }
 }
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'd8l8ldd47ecmsq',
-#        'USER': 'hqykoyjgekunsc',
-#        'PASSWORD': '11cf9062d8ec5e33cc852c51b2c95590d62220c4467e053821f5ad30281745b1',
-#        'HOST': 'ec2-52-4-87-74.compute-1.amazonaws.com',
-#        'PORT':  '5432',
-#    }
-#}
 
 AUTH_USER_MODEL = 'petsis_app.User'
 
