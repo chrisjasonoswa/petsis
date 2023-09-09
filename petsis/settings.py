@@ -17,7 +17,7 @@ import os
 # import dj_database_url
 
 #FOR CSRF verification
-CSRF_TRUSTED_ORIGINS = ['https://petsis-production.up.railway.app/']
+CSRF_TRUSTED_ORIGINS = ['https://petsis-production.up.railway.app']
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-w#t5iw8!@f0z&sac_=y)fhl%b)lp7^#h+_g7mxmbl818ftmbqr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #For Static Files
 ]
 
 ROOT_URLCONF = 'petsis.urls'
