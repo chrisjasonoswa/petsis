@@ -1,0 +1,22 @@
+.settings-card{
+    padding: 10vh;
+    background-color: white;
+    border-radius: 2rem !important;
+}
+
+@media (max-width: 700px) {
+    .settings-card{
+        padding: 1%;
+        border-radius: 2rem;
+        background-color: white;
+    }
+    }
+
+.img-settings{
+    border-top-left-radius: 2rem !important;
+    border-top-right-radius: 2rem !important;
+}
+
+.settings-sec{
+    margin-top: 4rem;
+}

@@ -15,9 +15,8 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/wsgi/
 
 # application = get_wsgi_application()
 
-#Vercel Config
 import os
 from django.core.wsgi import get_wsgi_application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "petsis.settings")
 application = get_wsgi_application()
-app = application
+#app = application

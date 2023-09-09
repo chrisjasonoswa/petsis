@@ -1,0 +1,93 @@
+.btn-primary{
+    background-color: #A88850 !important;
+    border-color: #A88850 !important;
+}
+
+.btn-primary:hover{
+    background-color: #856b3e !important;
+    border-color: #856b3e !important;
+}
+
+div.modal-header{
+    background-color: #A88850 !important;
+    border-top-right-radius: inherit !important;
+    border-top-left-radius: inherit !important;
+    color: white;
+}
+
+div.modal-delete{
+    background-color: #d63434 !important;
+}
+
+div.modal-content{
+    border-radius: 2rem !important;
+    border: 0px !important;
+}
+
+.close-bttn{
+    background-color: #606a67 !important;
+}
+
+.inv-items-cards{
+    border-radius: 2rem !important;
+    min-width: 250px;
+    margin-bottom: 1rem;
+}
+@media (max-width: 1350px) {
+    .inv-items-cards{
+        margin-bottom: 1rem !important;
+    }
+    }
+
+.item-info{
+    font-size: 0.9em;
+
+}
+
+.info-title{
+    font-weight: 500;
+}
+
+.test{
+    min-width: 250px;
+}
+
+
+@media only screen and (max-width: 460px) {
+    #change{
+        display: flex !important;
+        justify-content: flex-start !important;
+    }
+}
+
+.update_items_bttn{
+    font-size: 0.8rem;
+}
+
+.fa-pen-to-square{
+    color: #A88850;
+}
+.fa-circle-plus{
+    color: rgb(44, 168, 127);
+}
+
+.fa-trash{
+    color: rgb(255, 71, 71);
+}
+
+.dropdown-item:hover{
+    cursor: pointer !important;
+}
+
+.dropdown-item:active{
+    background-color: #7f8f8a;
+}
+
+.bd-cat{
+    font-size: medium;
+    font-weight: 600 !important;
+}
+
+.col{
+    margin-top: 0% !important;
+}

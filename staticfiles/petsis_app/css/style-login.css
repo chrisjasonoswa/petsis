@@ -1,0 +1,59 @@
+body{
+    overflow: hidden;
+}
+
+.btn-primary{
+    background-color: #475351 !important;
+    border-color: #576865 !important;
+}
+
+.btn-primary:hover{
+    background-color: #576865 !important;
+    border-color: #576865 !important;
+}
+.form-control:focus {
+    border-color: #576865 !important;
+    box-shadow: 0 0 0 0.2rem rgba(87, 104, 101, 0.5) !important;
+} 
+a.link-register{
+    color: #A88850;
+}
+
+a.link-register:hover{
+    color: #f8c263;
+}
+
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.h-custom {
+height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+margin-top: 5rem !important;
+}
+}
+
+div.col-md-8 {
+    overflow: hidden !important;
+}
+  
+div.col-md-8 {
+    animation: 0.5s slide-up;    
+}
+
+  
+@keyframes slide-up {
+from {
+    margin-top: 50%;
+}
+to {
+    margin-top: 0%;
+}
+}

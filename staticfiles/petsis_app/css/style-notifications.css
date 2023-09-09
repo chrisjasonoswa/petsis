@@ -1,0 +1,12 @@
+a{
+    color: black;
+}
+
+a:hover{
+    text-decoration: none;
+    color: #b89830 !important;
+}
+.mark-all{
+    font-size: large;
+    opacity: 0.6;
+}
