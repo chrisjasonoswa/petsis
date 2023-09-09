@@ -35,4 +35,4 @@ urlpatterns = [
 
     path("settings", views.settings, name="settings"),
     path("guide", views.user_guide, name="user_guide"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
