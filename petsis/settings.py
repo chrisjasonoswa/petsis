@@ -91,10 +91,10 @@ WSGI_APPLICATION = 'petsis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'URL': os.getenv('DATABASE_URL'),
-        'NAME': os.getenv('PGDATABASE'),
+        'URL': os.getenv('POSTGRES_URL'),
+        'NAME': os.getenv('PGNAME'),
         'USER': os.getenv('PGUSER'),
-        'PASSWORD': os.getenv('PGPASSWORD'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('PGHOST'),
         'PORT': os.getenv('PGPORT'),
     }
