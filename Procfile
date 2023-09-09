@@ -1,1 +1,0 @@
-web: gunicorn petsis.wsgi --log-file -
